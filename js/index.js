@@ -46,11 +46,12 @@ $(document).ready(function(){
         }
     }
 
+    //bug's collider is a 30 * 30rectangle
     let bugMeta = {
         img : new Image(),
         collider : {
-            xOffset : 0,
-            yOffset : 0
+            xOffset : 30,
+            yOffset : 30
         }
     }
 
@@ -61,9 +62,21 @@ $(document).ready(function(){
         size2Speed : 90/fps,
         size3 : 6,
         size3Speed : 85/fps,
-        size1Collider:{},
-        size2Collider:{},
-        size3Collider:{}
+        size1Collider:{
+            xOffset : 2,
+            yOffset : 2,
+            radius : 2
+        },
+        size2Collider:{
+            xOffset : 2.5,
+            yOffset : 2.5,
+            radius : 2.5
+        },
+        size3Collider:{
+            xOffset : 3,
+            yOffset : 3,
+            radius : 3
+        }
     }
 
     //wind speed will be the speed of bug, its the pixel the bugs move per frame
@@ -71,7 +84,9 @@ $(document).ready(function(){
         speed : 0
     }
 
-    let bugs = [];
+    //let bugs = [];
+    let bugs = {}
+
     let bugCnt = 0;
     let droplets = [];
     let dropletsCnt = 0;
@@ -120,7 +135,7 @@ $(document).ready(function(){
 
             let canvas = document.getElementById('canvas');
             let ctx = canvas.getContext("2d");
-            ctx.clearRect(0, 0, 700, 700); // clear canvas
+            ctx.clearRect(0, 0, 1000, 1000); // clear canvas
             //draw fishBowl
             drawFishBowl(ctx);
             //draw waterline
@@ -281,10 +296,20 @@ $(document).ready(function(){
 
     //calculate and display bug movement
     function displayBugMovement(ctx){
+        for (var index in bugs){
+            bugs[index].xPos += wind.speed;
+            ctx.drawImage(bugMeta.img,bugs[index].xPos,bugs[index].yPos,30,30*bugMeta.img.height/bugMeta.img.width);
+            //delete bug if is out of screen
+            if (bugs[index].xPos > 600){
+                delete bugs[index];
+            }
+            //console.log(bugs[index].xPos) ;
+        }
+        /*
         for (let x = 0; x < bugs.length; x++){
             bugs[x].xPos += wind.speed;
             ctx.drawImage(bugMeta.img,bugs[x].xPos,bugs[x].yPos,30,30*bugMeta.img.height/bugMeta.img.width);
-        }
+        }*/
     }
 
     function shootDroplet(){
@@ -296,7 +321,7 @@ $(document).ready(function(){
 
     //calculate and display all droplets
     function displayDropletMovement(ctx){
-        for (let i = 0; i  < dropletsCnt; i++){
+        for (let i in droplets){
             if (droplets[i].exist === true){
                 //draw the position of droplet
                 ctx.beginPath();
@@ -307,17 +332,19 @@ $(document).ready(function(){
                 droplets[i].ySpeed -= gravity;
                 droplets[i].yPos -= droplets[i].ySpeed;
                 //Droplet motion must also be affected by wind, once above the top of the bowl.
-                if ( droplets[i].yPos < 282.44) {
-                    droplets[i].xSpeed += wind.speed/30;
+                if (droplets[i].yPos < 282.44) {
+                    droplets[i].windSpeed = wind.speed;
+
                 }
+                droplets[i].xPos += droplets[i].windSpeed;
                 droplets[i].xPos += droplets[i].xSpeed;
             }
         }
     }
 
-    function detectDropletBugCollision(bug){
-
-    }
+    //function detectDropletBugCollision(bug){
+     //   if()
+   // }
 
     class Droplet{
         constructor(size,collider,xPos,yPos,speed){
@@ -325,6 +352,7 @@ $(document).ready(function(){
             this.collider = collider;
             this.angle = fish.angle;
             this.exist = true;
+            this.windSpeed = 0;
             this.xSpeed = speed*Math.sin(this.angle);
             //reduce the angle's impact on vertical speed
             this.ySpeed = speed*Math.cos(this.angle) + 200/fps;
