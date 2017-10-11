@@ -3,6 +3,20 @@
  */
 $(document).ready(function(){
 
+    //these are the variable used to control fps
+    var stop = false;
+    var frameCount = 0;
+    var fps = 60, fpsInterval, startTime, now, then, elapsed;
+
+    // initialize the timer variables and start the animation
+    function startAnimating(fps) {
+        fpsInterval = 1000 / fps;
+        then = Date.now();
+        startTime = then;
+        animate();
+    }
+
+
     //this var records fishbowl coordinates
     var fishbowl = {
         centerX: 350,
@@ -32,9 +46,21 @@ $(document).ready(function(){
         }
     }
 
-    var bug = {
-        img : new Image()
+    var bugMeta = {
+        img : new Image(),
+        collider : {
+            xOffset : 0,
+            yOffset : 0
+        }
     }
+
+    //wind speed will be the speed of bug, its the pixel the bugs move per frame
+    var wind = {
+        speed : 0
+    }
+
+    var bugs = {}
+    var bugCnt = 0;
 
     var waterLine;
 
@@ -43,12 +69,13 @@ $(document).ready(function(){
         canvas.height = 700;
         canvas.width = 700;
         fish.img.src = './css/fish.png';
-        bug.img.src = './css/bug.png';
+        bugMeta.img.src = './css/bug.png';
         waterLine = calWaterLine(500,950,50,0.5);
 
-        genetrateBugs();
+        generateBugs();
+        generateWind();
 
-        window.requestAnimationFrame(draw);
+        startAnimating(fps);
     }
 
     //draw fishbowl in canvas
@@ -62,68 +89,87 @@ $(document).ready(function(){
         ctx.stroke();
     }
 
-    function draw() {
-        var canvas = document.getElementById('canvas');
-        var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, 700, 700); // clear canvas
-        //draw fishBowl
-        drawFishBowl(ctx);
-        //draw waterline
-        drawWaterLine();
-        ctx.drawImage(bug.img,0,0, 30, 30 * fish.img.height / fish.img.width);
-        //if angle > 0, rotate fish
-        if (fish.angle != 0){
-            var cache = fish.img;
-            // save the unrotated context of the canvas so we can restore it later
-            ctx.save();
-            ctx.translate(fish.xPos+50, fish.yPos+50);
-            ctx.rotate(fish.angle);
-            ctx.drawImage(fish.img,-50,-50, 100, 100 * fish.img.height / fish.img.width);
-            ctx.restore();
+    function animate() {
+
+        // request another frame
+        requestAnimationFrame(animate);
+        // calc elapsed time since last loop
+        now = Date.now();
+        elapsed = now - then;
+
+        // if enough time has elapsed, draw the next frame
+
+        if (elapsed > fpsInterval) {
+
+            // Get ready for next frame by setting then=now, but also adjust for your
+            // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+            then = now - (elapsed % fpsInterval);
+
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, 700, 700); // clear canvas
+            //draw fishBowl
+            drawFishBowl(ctx);
+            //draw waterline
+            drawWaterLine();
+            //if angle > 0, rotate fish
+            if (fish.angle != 0){
+                var cache = fish.img;
+                // save the unrotated context of the canvas so we can restore it later
+                ctx.save();
+                ctx.translate(fish.xPos+50, fish.yPos+50);
+                ctx.rotate(fish.angle);
+                ctx.drawImage(fish.img,-50,-50, 100, 100 * fish.img.height / fish.img.width);
+                ctx.restore();
+            }
+            else {
+                ctx.drawImage(fish.img, fish.xPos,fish.yPos, 100, 100 * fish.img.height / fish.img.width);
+            }
+
+            document.onkeydown = checkKey;
+            displayBugMovement(ctx);
         }
-        else {
-            ctx.drawImage(fish.img, fish.xPos,fish.yPos, 100, 100 * fish.img.height / fish.img.width);
-        }
 
 
-        document.onkeydown = checkKey;
 
-        function checkKey(e) {
 
-            e = e || window.event;
 
-            //w
-            if (e.keyCode == '87') {
-                if (fish.angle > -60 * Math.PI / 180){
-                    fish.angle -= 5 * Math.PI / 180;
-                }
-            }
-            //s
-            else if (e.keyCode == '83') {
-                if (fish.angle < 60 * Math.PI / 180){
-                    fish.angle += 5 * Math.PI / 180;
-                }
-            }
-            //a
-            else if (e.keyCode == '65') {
-                //check if the fish can continue to move
-                var check = detectFishMoveLeft();
-                if (check) {
-                    fish.xPos -= 2;
-                }
-            }
-            //d
-            else if (e.keyCode == '68') {
-                var check = detectFishMoveRight();
-                if (check) {
-                    fish.xPos += 2;
-                }
-            }
 
-        }
-        window.requestAnimationFrame(draw);
     }
 
+    function checkKey(e) {
+
+        e = e || window.event;
+
+        //w
+        if (e.keyCode == '87') {
+            if (fish.angle > -60 * Math.PI / 180){
+                fish.angle -= 5 * Math.PI / 180;
+            }
+        }
+        //s
+        else if (e.keyCode == '83') {
+            if (fish.angle < 60 * Math.PI / 180){
+                fish.angle += 5 * Math.PI / 180;
+            }
+        }
+        //a
+        else if (e.keyCode == '65') {
+            //check if the fish can continue to move
+            var check = detectFishMoveLeft();
+            if (check) {
+                fish.xPos -= 2;
+            }
+        }
+        //d
+        else if (e.keyCode == '68') {
+            var check = detectFishMoveRight();
+            if (check) {
+                fish.xPos += 2;
+            }
+        }
+
+    }
         /**
          * Used to calculate the waterline points
          * codes from http://www.somethinghitme.com/2013/11/11/simple-2d-terrain-with-midpoint-displacement/
@@ -180,17 +226,58 @@ $(document).ready(function(){
     }
 
     //generate every 3-5 seconds
-    function genetrateBugs() {
+    function generateBugs() {
         time = Math.random() * 3000 + 2000;
         setTimeout(function () {
-            genetrateBugs();
-            console.log("Bug");
+            createBug();
+            generateBugs();
+            //console.log("Bug");
         },time)
 
     }
 
+    //create a bug and store it in an array called bugs
     function createBug(){
+        bugCnt++;
+        bugs[bugCnt] = {
+            xPos : 0,
+            yPos : 50,
+            collider : bugMeta.collider
+        };
+        //console.log(bugCnt);
+    }
 
+    //generate windSpeed, the speed of wind is the speed of bug
+    function generateWind(){
+        time = Math.random() * 1000 + 1000;
+        //the range would result in a bug taking 2s to 10s to cross the screen
+        //the game area has length 700, so the speed should between 70 and 350 per second
+        //so the wind spped will be (70 ~ 350) / frame per second
+        wind.speed = (Math.random() * 280 + 70)/fps;
+        console.log(wind.speed);
+        setTimeout(function(){
+            generateWind();
+            //console.log(wind.speed);
+        },time);
+    }
+
+    //calculate and display bug movement,
+    function displayBugMovement(ctx){
+        for (var x = 0; x < bugs.length; x++){
+            bugs[x].xPos += wind.speed;
+            console.log(bugs[x].xPos);
+            ctx.drawImage(bugMeta.img,bugs[x].xPos,bugsp[x].yPos);
+        }
+
+        /**
+        for (var fly in bugs){
+            if (bugs.hasOwnProperty(fly)) {
+                fly.xPos += wind.speed;
+                console.log(fly.xPos);
+                ctx.drawImage(bugMeta.img,fly.xPos,fly.yPos);
+            }
+        }
+         */
     }
     init();
 
