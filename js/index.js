@@ -5,9 +5,15 @@ $(document).ready(function(){
 
     //these are the variable used to control fps
 <<<<<<< HEAD
+<<<<<<< HEAD
     let stop = false;
     let frameCount = 0;
     let fps = 100, fpsInterval, startTime, now, then, elapsed;
+=======
+    var stop = false;
+    var frameCount = 0;
+    var fps = 60, fpsInterval, startTime, now, then, elapsed;
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 =======
     var stop = false;
     var frameCount = 0;
@@ -23,7 +29,11 @@ $(document).ready(function(){
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     let gravity = 1.5/fps;
+=======
+
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 =======
 
 >>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
@@ -57,7 +67,11 @@ $(document).ready(function(){
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     let bugMeta = {
+=======
+    var bugMeta = {
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 =======
     var bugMeta = {
 >>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
@@ -66,6 +80,7 @@ $(document).ready(function(){
             xOffset : 0,
             yOffset : 0
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
     }
 
@@ -99,6 +114,15 @@ $(document).ready(function(){
         speed : 0
     }
 
+=======
+    }
+
+    //wind speed will be the speed of bug, its the pixel the bugs move per frame
+    var wind = {
+        speed : 0
+    }
+
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
     var bugs = {}
     var bugCnt = 0;
 
@@ -147,8 +171,13 @@ $(document).ready(function(){
             then = now - (elapsed % fpsInterval);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             let canvas = document.getElementById('canvas');
             let ctx = canvas.getContext("2d");
+=======
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext("2d");
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 =======
             var canvas = document.getElementById('canvas');
             var ctx = canvas.getContext("2d");
@@ -161,7 +190,11 @@ $(document).ready(function(){
             //if angle > 0, rotate fish
             if (fish.angle != 0){
 <<<<<<< HEAD
+<<<<<<< HEAD
                 //let cache = fish.img;
+=======
+                var cache = fish.img;
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 =======
                 var cache = fish.img;
 >>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
@@ -179,7 +212,10 @@ $(document).ready(function(){
             document.onkeydown = checkKey;
             displayBugMovement(ctx);
 <<<<<<< HEAD
+<<<<<<< HEAD
             displayDropletMovement(ctx);
+=======
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 =======
 >>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
         }
@@ -193,7 +229,13 @@ $(document).ready(function(){
 
     function checkKey(e) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         e = e || window.event;
+=======
+
+        e = e || window.event;
+
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 =======
 
         e = e || window.event;
@@ -215,7 +257,11 @@ $(document).ready(function(){
         else if (e.keyCode == '65') {
             //check if the fish can continue to move
 <<<<<<< HEAD
+<<<<<<< HEAD
             let check = detectFishMoveLeft();
+=======
+            var check = detectFishMoveLeft();
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 =======
             var check = detectFishMoveLeft();
 >>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
@@ -226,7 +272,11 @@ $(document).ready(function(){
         //d
         else if (e.keyCode == '68') {
 <<<<<<< HEAD
+<<<<<<< HEAD
             let check = detectFishMoveRight();
+=======
+            var check = detectFishMoveRight();
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 =======
             var check = detectFishMoveRight();
 >>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
@@ -234,6 +284,7 @@ $(document).ready(function(){
                 fish.xPos += 2;
             }
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
         //space
         else if (e.keyCode == '32'){
@@ -250,6 +301,8 @@ $(document).ready(function(){
      * the maximum deviation value. This stops the terrain from going out of bounds if we choose
      * */
 =======
+=======
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 
     }
         /**
@@ -322,6 +375,7 @@ $(document).ready(function(){
     //create a bug and store it in an array called bugs
     function createBug(){
 <<<<<<< HEAD
+<<<<<<< HEAD
         bugs[bugCnt] = {
             xPos : 0,
             yPos : 200,
@@ -330,6 +384,8 @@ $(document).ready(function(){
         bugCnt++;
         //console.log(bugs[0].xPos);
 =======
+=======
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
         bugCnt++;
         bugs[bugCnt] = {
             xPos : 0,
@@ -337,6 +393,9 @@ $(document).ready(function(){
             collider : bugMeta.collider
         };
         //console.log(bugCnt);
+<<<<<<< HEAD
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
+=======
 >>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
     }
 
@@ -347,6 +406,7 @@ $(document).ready(function(){
         //the game area has length 700, so the speed should between 70 and 350 per second
         //so the wind spped will be (70 ~ 350) / frame per second
         wind.speed = (Math.random() * 280 + 70)/fps;
+<<<<<<< HEAD
 <<<<<<< HEAD
         //console.log(wind.speed);
         setTimeout(function(){
@@ -359,6 +419,32 @@ $(document).ready(function(){
 >>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
             //console.log(wind.speed);
         },time);
+=======
+        console.log(wind.speed);
+        setTimeout(function(){
+            generateWind();
+            //console.log(wind.speed);
+        },time);
+    }
+
+    //calculate and display bug movement,
+    function displayBugMovement(ctx){
+        for (var x = 0; x < bugs.length; x++){
+            bugs[x].xPos += wind.speed;
+            console.log(bugs[x].xPos);
+            ctx.drawImage(bugMeta.img,bugs[x].xPos,bugsp[x].yPos);
+        }
+
+        /**
+        for (var fly in bugs){
+            if (bugs.hasOwnProperty(fly)) {
+                fly.xPos += wind.speed;
+                console.log(fly.xPos);
+                ctx.drawImage(bugMeta.img,fly.xPos,fly.yPos);
+            }
+        }
+         */
+>>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
     }
 
 <<<<<<< HEAD
