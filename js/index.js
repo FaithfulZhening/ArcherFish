@@ -15,14 +15,25 @@ $(document).ready(function(){
         leftUpX:188.196,
         leftUpY:282.44,
         rightUpX:511.804,
-        rightUpY:282.44
+        rightUpY:282.44,
+        waterLeftX:160,
+        waterRightX:540
     };
 
     var fish = {
         img : new Image(),
         xPos : 180,
         yPos : 450,
-        ctrl : "right"
+        angle : 0,
+        //the fish collider will be a circle with one of the point
+        collider:{
+            xOffset: 0,
+            yOffset : 50
+        }
+    }
+
+    var bug = {
+        img : new Image()
     }
 
     var waterLine;
@@ -32,7 +43,11 @@ $(document).ready(function(){
         canvas.height = 700;
         canvas.width = 700;
         fish.img.src = './css/fish.png';
+        bug.img.src = './css/bug.png';
         waterLine = calWaterLine(500,950,50,0.5);
+
+        genetrateBugs();
+
         window.requestAnimationFrame(draw);
     }
 
@@ -55,20 +70,58 @@ $(document).ready(function(){
         drawFishBowl(ctx);
         //draw waterline
         drawWaterLine();
-
-        // save the unrotated context of the canvas so we can restore it later
-        ctx.save();
-        fish.img.onload = function () {
-            // move to the center of the canvas
-            ctx.translate(fish.xPos, fish.yPos);
-            if (fish.ctrl == "right"){
-                ctx.rotate(ctx.rotate(10 * Math.PI / 180));
-                ctx.drawImage(fish.img, -10,-20, 50, 50 * fish.img.height / fish.img.width);
-            }
+        ctx.drawImage(bug.img,0,0, 30, 30 * fish.img.height / fish.img.width);
+        //if angle > 0, rotate fish
+        if (fish.angle != 0){
+            var cache = fish.img;
+            // save the unrotated context of the canvas so we can restore it later
+            ctx.save();
+            ctx.translate(fish.xPos+50, fish.yPos+50);
+            ctx.rotate(fish.angle);
+            ctx.drawImage(fish.img,-50,-50, 100, 100 * fish.img.height / fish.img.width);
+            ctx.restore();
+        }
+        else {
+            ctx.drawImage(fish.img, fish.xPos,fish.yPos, 100, 100 * fish.img.height / fish.img.width);
         }
 
-       // ctx.restore();
-       // ctx.drawImage(fish.img, fish.xPos, fish.yPos, 50, 50 * fish.img.height / fish.img.width);
+
+        document.onkeydown = checkKey;
+
+        function checkKey(e) {
+
+            e = e || window.event;
+
+            //w
+            if (e.keyCode == '87') {
+                if (fish.angle > -60 * Math.PI / 180){
+                    fish.angle -= 5 * Math.PI / 180;
+                }
+            }
+            //s
+            else if (e.keyCode == '83') {
+                if (fish.angle < 60 * Math.PI / 180){
+                    fish.angle += 5 * Math.PI / 180;
+                }
+            }
+            //a
+            else if (e.keyCode == '65') {
+                //check if the fish can continue to move
+                var check = detectFishMoveLeft();
+                if (check) {
+                    fish.xPos -= 2;
+                }
+            }
+            //d
+            else if (e.keyCode == '68') {
+                var check = detectFishMoveRight();
+                if (check) {
+                    fish.xPos += 2;
+                }
+            }
+
+        }
+        window.requestAnimationFrame(draw);
     }
 
         /**
@@ -113,5 +166,33 @@ $(document).ready(function(){
         ctx.strokeStyle = "rgb(36, 165, 255)";
         ctx.stroke();
     }
+
+    //dectect if fish can move to left
+    function detectFishMoveLeft(){
+        if (fish.xPos <= fishbowl.waterLeftX )return false;
+        return true;
+    }
+
+    //detect if fish can move to right
+    function detectFishMoveRight(){
+        if (fish.xPos + 100 >= fishbowl.waterRightX)return false;
+        return true;
+    }
+
+    //generate every 3-5 seconds
+    function genetrateBugs() {
+        time = Math.random() * 3000 + 2000;
+        setTimeout(function () {
+            genetrateBugs();
+            console.log("Bug");
+        },time)
+
+    }
+
+    function createBug(){
+
+    }
     init();
+
+
 });
