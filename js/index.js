@@ -4,21 +4,9 @@
 $(document).ready(function(){
 
     //these are the variable used to control fps
-<<<<<<< HEAD
-<<<<<<< HEAD
     let stop = false;
     let frameCount = 0;
     let fps = 100, fpsInterval, startTime, now, then, elapsed;
-=======
-    var stop = false;
-    var frameCount = 0;
-    var fps = 60, fpsInterval, startTime, now, then, elapsed;
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-=======
-    var stop = false;
-    var frameCount = 0;
-    var fps = 60, fpsInterval, startTime, now, then, elapsed;
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 
     // initialize the timer variables and start the animation
     function startAnimating(fps) {
@@ -28,15 +16,7 @@ $(document).ready(function(){
         animate();
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     let gravity = 1.5/fps;
-=======
-
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-=======
-
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
     //this var records fishbowl coordinates
     let fishbowl = {
         centerX: 350,
@@ -66,22 +46,12 @@ $(document).ready(function(){
         }
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     let bugMeta = {
-=======
-    var bugMeta = {
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-=======
-    var bugMeta = {
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
         img : new Image(),
         collider : {
             xOffset : 0,
             yOffset : 0
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
     }
 
     let dropletMeta = {
@@ -106,28 +76,6 @@ $(document).ready(function(){
     let droplets = [];
     let dropletsCnt = 0;
     let waterLine;
-=======
-    }
-
-    //wind speed will be the speed of bug, its the pixel the bugs move per frame
-    var wind = {
-        speed : 0
-    }
-
-=======
-    }
-
-    //wind speed will be the speed of bug, its the pixel the bugs move per frame
-    var wind = {
-        speed : 0
-    }
-
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-    var bugs = {}
-    var bugCnt = 0;
-
-    var waterLine;
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
 
     function init(){
         var canvas = document.getElementById('canvas');
@@ -170,18 +118,8 @@ $(document).ready(function(){
             // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
             then = now - (elapsed % fpsInterval);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
             let canvas = document.getElementById('canvas');
             let ctx = canvas.getContext("2d");
-=======
-            var canvas = document.getElementById('canvas');
-            var ctx = canvas.getContext("2d");
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-=======
-            var canvas = document.getElementById('canvas');
-            var ctx = canvas.getContext("2d");
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
             ctx.clearRect(0, 0, 700, 700); // clear canvas
             //draw fishBowl
             drawFishBowl(ctx);
@@ -189,15 +127,7 @@ $(document).ready(function(){
             drawWaterLine();
             //if angle > 0, rotate fish
             if (fish.angle != 0){
-<<<<<<< HEAD
-<<<<<<< HEAD
                 //let cache = fish.img;
-=======
-                var cache = fish.img;
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-=======
-                var cache = fish.img;
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
                 // save the unrotated context of the canvas so we can restore it later
                 ctx.save();
                 ctx.translate(fish.xPos+50, fish.yPos+50);
@@ -211,13 +141,7 @@ $(document).ready(function(){
 
             document.onkeydown = checkKey;
             displayBugMovement(ctx);
-<<<<<<< HEAD
-<<<<<<< HEAD
             displayDropletMovement(ctx);
-=======
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-=======
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
         }
 
 
@@ -228,19 +152,7 @@ $(document).ready(function(){
     }
 
     function checkKey(e) {
-<<<<<<< HEAD
-<<<<<<< HEAD
         e = e || window.event;
-=======
-
-        e = e || window.event;
-
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-=======
-
-        e = e || window.event;
-
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
         //w
         if (e.keyCode == '87') {
             if (fish.angle > -60 * Math.PI / 180){
@@ -256,36 +168,18 @@ $(document).ready(function(){
         //a
         else if (e.keyCode == '65') {
             //check if the fish can continue to move
-<<<<<<< HEAD
-<<<<<<< HEAD
             let check = detectFishMoveLeft();
-=======
-            var check = detectFishMoveLeft();
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-=======
-            var check = detectFishMoveLeft();
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
             if (check) {
                 fish.xPos -= 2;
             }
         }
         //d
         else if (e.keyCode == '68') {
-<<<<<<< HEAD
-<<<<<<< HEAD
             let check = detectFishMoveRight();
-=======
-            var check = detectFishMoveRight();
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-=======
-            var check = detectFishMoveRight();
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
             if (check) {
                 fish.xPos += 2;
             }
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
         //space
         else if (e.keyCode == '32'){
             console.log("space is pressed")
@@ -300,19 +194,6 @@ $(document).ready(function(){
      * width and height are the overall width and height we have to work with, displace is
      * the maximum deviation value. This stops the terrain from going out of bounds if we choose
      * */
-=======
-=======
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-
-    }
-        /**
-         * Used to calculate the waterline points
-         * codes from http://www.somethinghitme.com/2013/11/11/simple-2d-terrain-with-midpoint-displacement/
-         *
-         * width and height are the overall width and height we have to work with, displace is
-         * the maximum deviation value. This stops the terrain from going out of bounds if we choose
-         * */
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
     function calWaterLine(width, height, displace, roughness) {
         var points = [],
             // Gives us a power of 2 based on our width
@@ -374,8 +255,6 @@ $(document).ready(function(){
 
     //create a bug and store it in an array called bugs
     function createBug(){
-<<<<<<< HEAD
-<<<<<<< HEAD
         bugs[bugCnt] = {
             xPos : 0,
             yPos : 200,
@@ -383,20 +262,6 @@ $(document).ready(function(){
         };
         bugCnt++;
         //console.log(bugs[0].xPos);
-=======
-=======
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-        bugCnt++;
-        bugs[bugCnt] = {
-            xPos : 0,
-            yPos : 50,
-            collider : bugMeta.collider
-        };
-        //console.log(bugCnt);
-<<<<<<< HEAD
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-=======
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
     }
 
     //generate windSpeed, the speed of wind is the speed of bug
@@ -406,48 +271,14 @@ $(document).ready(function(){
         //the game area has length 700, so the speed should between 70 and 350 per second
         //so the wind spped will be (70 ~ 350) / frame per second
         wind.speed = (Math.random() * 280 + 70)/fps;
-<<<<<<< HEAD
-<<<<<<< HEAD
         //console.log(wind.speed);
         setTimeout(function(){
             generateWind();
             $("#speed").text("Wind Speed:" +　wind.speed);
-=======
-        console.log(wind.speed);
-        setTimeout(function(){
-            generateWind();
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-            //console.log(wind.speed);
-        },time);
-=======
-        console.log(wind.speed);
-        setTimeout(function(){
-            generateWind();
             //console.log(wind.speed);
         },time);
     }
 
-    //calculate and display bug movement,
-    function displayBugMovement(ctx){
-        for (var x = 0; x < bugs.length; x++){
-            bugs[x].xPos += wind.speed;
-            console.log(bugs[x].xPos);
-            ctx.drawImage(bugMeta.img,bugs[x].xPos,bugsp[x].yPos);
-        }
-
-        /**
-        for (var fly in bugs){
-            if (bugs.hasOwnProperty(fly)) {
-                fly.xPos += wind.speed;
-                console.log(fly.xPos);
-                ctx.drawImage(bugMeta.img,fly.xPos,fly.yPos);
-            }
-        }
-         */
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
-    }
-
-<<<<<<< HEAD
     //calculate and display bug movement
     function displayBugMovement(ctx){
         for (let x = 0; x < bugs.length; x++){
@@ -461,25 +292,6 @@ $(document).ready(function(){
         droplets[dropletsCnt + 1] = new Droplet(dropletMeta.size2,dropletMeta.size2Collider,fish.xPos + 45,fish.yPos - 15,dropletMeta.size2Speed);
         droplets[dropletsCnt + 2] = new Droplet(dropletMeta.size3,dropletMeta.size3Collider,fish.xPos + 55,fish.yPos - 5,dropletMeta.size3Speed);
         dropletsCnt += 3;
-=======
-    //calculate and display bug movement,
-    function displayBugMovement(ctx){
-        for (var x = 0; x < bugs.length; x++){
-            bugs[x].xPos += wind.speed;
-            console.log(bugs[x].xPos);
-            ctx.drawImage(bugMeta.img,bugs[x].xPos,bugsp[x].yPos);
-        }
-
-        /**
-        for (var fly in bugs){
-            if (bugs.hasOwnProperty(fly)) {
-                fly.xPos += wind.speed;
-                console.log(fly.xPos);
-                ctx.drawImage(bugMeta.img,fly.xPos,fly.yPos);
-            }
-        }
-         */
->>>>>>> 6b7f53150aec8b01de284cf07e96fd6d819168e1
     }
 
     //calculate and display all droplets
@@ -504,7 +316,7 @@ $(document).ready(function(){
     }
 
     function detectDropletBugCollision(bug){
-        
+
     }
 
     class Droplet{

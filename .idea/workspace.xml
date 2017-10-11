@@ -35,18 +35,18 @@
       <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="318" column="8" lean-forward="true" selection-start-line="318" selection-start-column="8" selection-end-line="318" selection-end-column="8" />
+            <state relative-caret-position="19">
+              <caret line="1" column="35" lean-forward="true" selection-start-line="1" selection-start-column="35" selection-end-line="1" selection-end-column="35" />
               <folding>
-                <marker date="1507759026049" expanded="false" signature="329:442" ph="{...}" />
-                <marker date="1507759026049" expanded="false" signature="1591:1616" ph="{...}" />
-                <marker date="1507759026049" expanded="false" signature="2139:2400" ph="{...}" />
-                <marker date="1507759026049" expanded="false" signature="4912:5271" ph="/** Used to calculate the waterline points ...*/" />
-                <marker date="1507759026049" expanded="false" signature="5334:6300" ph="{...}" />
-                <marker date="1507759026049" expanded="false" signature="6330:6662" ph="{...}" />
-                <marker date="1507759026049" expanded="false" signature="6736:6824" ph="{...}" />
-                <marker date="1507759026049" expanded="false" signature="6899:6993" ph="{...}" />
-                <marker date="1507759026049" expanded="false" signature="7056:7244" ph="{...}" />
+                <marker date="1507761038303" expanded="false" signature="329:442" ph="{...}" />
+                <marker date="1507761038303" expanded="false" signature="1591:1616" ph="{...}" />
+                <marker date="1507761038303" expanded="false" signature="2139:2400" ph="{...}" />
+                <marker date="1507761038303" expanded="false" signature="4912:5271" ph="/** Used to calculate the waterline points ...*/" />
+                <marker date="1507761038303" expanded="false" signature="5334:6300" ph="{...}" />
+                <marker date="1507761038303" expanded="false" signature="6330:6662" ph="{...}" />
+                <marker date="1507761038303" expanded="false" signature="6736:6824" ph="{...}" />
+                <marker date="1507761038303" expanded="false" signature="6899:6993" ph="{...}" />
+                <marker date="1507761038303" expanded="false" signature="7056:7244" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -216,12 +216,12 @@
       <workItem from="1507576630058" duration="10271000" />
       <workItem from="1507603725201" duration="24941000" />
       <workItem from="1507747069960" duration="4084000" />
-      <workItem from="1507751776159" duration="7245000" />
+      <workItem from="1507751776159" duration="7894000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="46541000" />
+    <option name="totallyTimeSpent" value="47190000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="0" width="1926" height="1056" extended-state="0" />
@@ -279,15 +279,15 @@
         <state relative-caret-position="5586">
           <caret line="294" column="24" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="326" selection-end-column="3" />
           <folding>
-            <marker date="1507759026049" expanded="false" signature="329:442" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="1591:1616" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="2139:2400" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="4912:5271" ph="/** Used to calculate the waterline points ...*/" />
-            <marker date="1507759026049" expanded="false" signature="5334:6300" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="6330:6662" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="6736:6824" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="6899:6993" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="7056:7244" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="329:442" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="1591:1616" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="2139:2400" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="4912:5271" ph="/** Used to calculate the waterline points ...*/" />
+            <marker date="1507761038303" expanded="false" signature="5334:6300" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="6330:6662" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="6736:6824" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="6899:6993" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="7056:7244" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -312,15 +312,15 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1507759026049" expanded="false" signature="329:442" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="1591:1616" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="2139:2400" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="4912:5271" ph="/** Used to calculate the waterline points ...*/" />
-            <marker date="1507759026049" expanded="false" signature="5334:6300" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="6330:6662" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="6736:6824" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="6899:6993" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="7056:7244" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="329:442" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="1591:1616" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="2139:2400" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="4912:5271" ph="/** Used to calculate the waterline points ...*/" />
+            <marker date="1507761038303" expanded="false" signature="5334:6300" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="6330:6662" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="6736:6824" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="6899:6993" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="7056:7244" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -352,18 +352,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="318" column="8" lean-forward="true" selection-start-line="318" selection-start-column="8" selection-end-line="318" selection-end-column="8" />
+        <state relative-caret-position="19">
+          <caret line="1" column="35" lean-forward="true" selection-start-line="1" selection-start-column="35" selection-end-line="1" selection-end-column="35" />
           <folding>
-            <marker date="1507759026049" expanded="false" signature="329:442" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="1591:1616" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="2139:2400" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="4912:5271" ph="/** Used to calculate the waterline points ...*/" />
-            <marker date="1507759026049" expanded="false" signature="5334:6300" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="6330:6662" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="6736:6824" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="6899:6993" ph="{...}" />
-            <marker date="1507759026049" expanded="false" signature="7056:7244" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="329:442" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="1591:1616" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="2139:2400" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="4912:5271" ph="/** Used to calculate the waterline points ...*/" />
+            <marker date="1507761038303" expanded="false" signature="5334:6300" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="6330:6662" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="6736:6824" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="6899:6993" ph="{...}" />
+            <marker date="1507761038303" expanded="false" signature="7056:7244" ph="{...}" />
           </folding>
         </state>
       </provider>
