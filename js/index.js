@@ -6,7 +6,7 @@ $(document).ready(function(){
     //these are the variable used to control fps
     let stop = false;
     let frameCount = 0;
-    let fps = 100, fpsInterval, startTime, now, then, elapsed;
+    let fps = 60, fpsInterval, startTime, now, then, elapsed;
 
     // initialize the timer variables and start the animation
     function startAnimating(fps) {
@@ -50,9 +50,9 @@ $(document).ready(function(){
     let bugMeta = {
         img : new Image(),
         collider : {
-            xOffset : 15,
-            yOffset : 15,
-            radius : 15
+            xOffset : 18,
+            yOffset : 18,
+            radius : 9
         }
     }
 
@@ -64,19 +64,13 @@ $(document).ready(function(){
         size3 : 6,
         size3Speed : 85/fps,
         size1Collider:{
-            xOffset : 2,
-            yOffset : 2,
-            radius : 2
+            radius : 4
         },
         size2Collider:{
-            xOffset : 2.5,
-            yOffset : 2.5,
-            radius : 2.5
+            radius : 5
         },
         size3Collider:{
-            xOffset : 3,
-            yOffset : 3,
-            radius : 3
+            radius : 6
         }
     }
 
@@ -198,7 +192,6 @@ $(document).ready(function(){
         }
         //space
         else if (e.keyCode == '32'){
-            console.log("space is pressed")
             shootDroplet();
         }
 
@@ -264,7 +257,6 @@ $(document).ready(function(){
         setTimeout(function () {
             createBug();
             generateBugs();
-            //console.log("Bug");
         },time)
 
     }
@@ -273,12 +265,11 @@ $(document).ready(function(){
     function createBug(){
         bugs[bugCnt] = {
             xPos : 0,
-            yPos : 200,
+            yPos : 230,
             collider : bugMeta.collider,
             alive : true
         };
         bugCnt++;
-        //console.log(bugs[0].xPos);
     }
 
     //generate windSpeed, the speed of wind is the speed of bug
@@ -288,6 +279,8 @@ $(document).ready(function(){
         //the game area has length 700, so the speed should between 70 and 350 per second
         //so the wind spped will be (70 ~ 350) / frame per second
         wind.speed = (Math.random() * 280 + 70)/fps;
+        //test
+        wind.speed = 120/fps;
         //console.log(wind.speed);
         setTimeout(function(){
             generateWind();
@@ -301,11 +294,14 @@ $(document).ready(function(){
         for (var index in bugs){
             bugs[index].xPos += wind.speed;
             ctx.drawImage(bugMeta.img,bugs[index].xPos,bugs[index].yPos,30,30*bugMeta.img.height/bugMeta.img.width);
+            //test purpose, draw bug collide
+            ctx.beginPath();
+            ctx.arc(bugs[index].xPos + 18,bugs[index].yPos+18,9,0,Math.PI*2);
+            ctx.stroke();
             //delete bug if is out of screen
             if (bugs[index].xPos > 700){
                 delete bugs[index];
             }
-            //console.log(bugs[index].xPos) ;
         }
         /*
         for (let x = 0; x < bugs.length; x++){
@@ -325,12 +321,13 @@ $(document).ready(function(){
     function displayDropletMovement(ctx){
         for (let i in droplets){
             for (let j in bugs){
-                var result = detectDropletBugCollision(droplets[i],bugs[j]);
+                var result = detectDropletBugCollision(bugs[j],droplets[i]);
+                //console.log(droplets[i].size);
             }
             //if the droplet collide with a bug, delete it
             if (result === true){
                 delete droplets[i];
-                console.log("No exist");
+                //console.log("No exist");
                 continue;
             }
             //draw the position of droplet
@@ -362,10 +359,10 @@ $(document).ready(function(){
      * @return true if there is collision, false otherwise
     * */
     function detectDropletBugCollision(bug,droplet){
-        let x = droplet.xPos + droplet.collider.xOffset - (bug.xPos + bug.collider.xOffset);
-        let y = droplet.yPos + droplet.collider.yOffset - (bug.yPos + bug.collider.yOffset);
+        let x = droplet.xPos - (bug.xPos + bugMeta.collider.xOffset);
+        let y = droplet.yPos - (bug.yPos + bugMeta.collider.yOffset);
         let distance = Math.sqrt( x*x + y*y);
-        if (distance <= bug.collider.radius + droplet.collider.radius){
+        if (distance <= bugMeta.collider.radius + droplet.size){
             //interesting, this part does not work as expected
             /*
             droplet.collided = true;
