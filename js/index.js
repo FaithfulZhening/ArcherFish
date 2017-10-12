@@ -50,9 +50,9 @@ $(document).ready(function(){
     let bugMeta = {
         img : new Image(),
         collider : {
-            xOffset : 15,
-            yOffset : 15,
-            radius : 15
+            xOffset : 18,
+            yOffset : 18,
+            radius : 9
         }
     }
 
@@ -64,19 +64,13 @@ $(document).ready(function(){
         size3 : 6,
         size3Speed : 85/fps,
         size1Collider:{
-            xOffset : 2,
-            yOffset : 2,
-            radius : 2
+            radius : 4
         },
         size2Collider:{
-            xOffset : 2.5,
-            yOffset : 2.5,
-            radius : 2.5
+            radius : 5
         },
         size3Collider:{
-            xOffset : 3,
-            yOffset : 3,
-            radius : 3
+            radius : 6
         }
     }
 
@@ -287,7 +281,9 @@ $(document).ready(function(){
         //the range would result in a bug taking 2s to 10s to cross the screen
         //the game area has length 700, so the speed should between 70 and 350 per second
         //so the wind spped will be (70 ~ 350) / frame per second
-        wind.speed = (Math.random() * 280 + 70)/fps;
+        //wind.speed = (Math.random() * 280 + 70)/fps;
+        //test
+        wind.speed = 120/fps;
         //console.log(wind.speed);
         setTimeout(function(){
             generateWind();
@@ -301,6 +297,10 @@ $(document).ready(function(){
         for (var index in bugs){
             bugs[index].xPos += wind.speed;
             ctx.drawImage(bugMeta.img,bugs[index].xPos,bugs[index].yPos,30,30*bugMeta.img.height/bugMeta.img.width);
+            //test purpose, draw bug collide
+            ctx.beginPath();
+            ctx.arc(bugs[index].xPos + 18,bugs[index].yPos+18,9,0,Math.PI*2);
+            ctx.stroke();
             //delete bug if is out of screen
             if (bugs[index].xPos > 700){
                 delete bugs[index];
@@ -362,17 +362,18 @@ $(document).ready(function(){
      * @return true if there is collision, false otherwise
     * */
     function detectDropletBugCollision(bug,droplet){
-        let x = droplet.xPos - (bug.xPos + bug.collider.xOffset);
-        let y = droplet.yPos - (bug.yPos + bug.collider.yOffset);
+        let x = droplet.xPos - (bug.xPos + bugMeta.collider.xOffset);
+        let y = droplet.yPos - (bug.yPos + bugMeta.collider.yOffset);
         let distance = Math.sqrt( x*x + y*y);
-        if (distance <= bug.collider.radius + droplet.collider.radius){
+            console.log(bugMeta.collider.radius + droplet.size);
+        if (distance <= bugMeta.collider.radius + droplet.size){
             //interesting, this part does not work as expected
             /*
             droplet.collided = true;
             bug.alive = false;
             console.log(droplet.collided);
              */
-            //console.log("Collision with bug detected!");
+            console.log("Collision with bug detected!");
             return true;
         }
         return false;
