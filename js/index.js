@@ -6,7 +6,7 @@ $(document).ready(function(){
     //these are the variable used to control fps
     let stop = false;
     let frameCount = 0;
-    let fps = 60, fpsInterval, startTime, now, then, elapsed;
+    let fps = 100, fpsInterval, startTime, now, then, elapsed;
 
     // initialize the timer variables and start the animation
     function startAnimating(fps) {
@@ -50,9 +50,9 @@ $(document).ready(function(){
     let bugMeta = {
         img : new Image(),
         collider : {
-            xOffset : 18,
-            yOffset : 18,
-            radius : 9
+            xOffset : 15,
+            yOffset : 15,
+            radius : 15
         }
     }
 
@@ -64,13 +64,19 @@ $(document).ready(function(){
         size3 : 6,
         size3Speed : 85/fps,
         size1Collider:{
-            radius : 4
+            xOffset : 2,
+            yOffset : 2,
+            radius : 2
         },
         size2Collider:{
-            radius : 5
+            xOffset : 2.5,
+            yOffset : 2.5,
+            radius : 2.5
         },
         size3Collider:{
-            radius : 6
+            xOffset : 3,
+            yOffset : 3,
+            radius : 3
         }
     }
 
@@ -267,7 +273,7 @@ $(document).ready(function(){
     function createBug(){
         bugs[bugCnt] = {
             xPos : 0,
-            yPos : 230,
+            yPos : 200,
             collider : bugMeta.collider,
             alive : true
         };
@@ -281,9 +287,7 @@ $(document).ready(function(){
         //the range would result in a bug taking 2s to 10s to cross the screen
         //the game area has length 700, so the speed should between 70 and 350 per second
         //so the wind spped will be (70 ~ 350) / frame per second
-        //wind.speed = (Math.random() * 280 + 70)/fps;
-        //test
-        wind.speed = 120/fps;
+        wind.speed = (Math.random() * 280 + 70)/fps;
         //console.log(wind.speed);
         setTimeout(function(){
             generateWind();
@@ -297,10 +301,6 @@ $(document).ready(function(){
         for (var index in bugs){
             bugs[index].xPos += wind.speed;
             ctx.drawImage(bugMeta.img,bugs[index].xPos,bugs[index].yPos,30,30*bugMeta.img.height/bugMeta.img.width);
-            //test purpose, draw bug collide
-            ctx.beginPath();
-            ctx.arc(bugs[index].xPos + 18,bugs[index].yPos+18,9,0,Math.PI*2);
-            ctx.stroke();
             //delete bug if is out of screen
             if (bugs[index].xPos > 700){
                 delete bugs[index];
@@ -362,18 +362,17 @@ $(document).ready(function(){
      * @return true if there is collision, false otherwise
     * */
     function detectDropletBugCollision(bug,droplet){
-        let x = droplet.xPos - (bug.xPos + bugMeta.collider.xOffset);
-        let y = droplet.yPos - (bug.yPos + bugMeta.collider.yOffset);
+        let x = droplet.xPos + droplet.collider.xOffset - (bug.xPos + bug.collider.xOffset);
+        let y = droplet.yPos + droplet.collider.yOffset - (bug.yPos + bug.collider.yOffset);
         let distance = Math.sqrt( x*x + y*y);
-            console.log(bugMeta.collider.radius + droplet.size);
-        if (distance <= bugMeta.collider.radius + droplet.size){
+        if (distance <= bug.collider.radius + droplet.collider.radius){
             //interesting, this part does not work as expected
             /*
             droplet.collided = true;
             bug.alive = false;
             console.log(droplet.collided);
              */
-            console.log("Collision with bug detected!");
+            //console.log("Collision with bug detected!");
             return true;
         }
         return false;
