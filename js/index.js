@@ -329,7 +329,11 @@ $(document).ready(function(){
         //so the wind spped will be (70 ~ 350) / frame per second
         wind.speed = (Math.random() * 280 + 70)/fps;
         //test
+<<<<<<< HEAD
         //wind.speed = 120/fps;
+=======
+        //wind.speed = 0/fps;
+>>>>>>> 4e1215dd992c669c55bc715aa7f800b02f262260
         //console.log(wind.speed);
         setTimeout(function(){
             generateWind();
@@ -495,8 +499,13 @@ $(document).ready(function(){
     }
 
     function detectBugWithFishBowl(bug){
+<<<<<<< HEAD
         let xPos = bug.xPos + 15;
         let yPos = bug.yPos + 15;
+=======
+        let xPos = bug.xPos;
+        let yPos = bug.yPos;
+>>>>>>> 4e1215dd992c669c55bc715aa7f800b02f262260
         //left bound detection and bounce
         if ( (xPos >=  150) && ( xPos + bug.size<= 189) && (yPos >282.44 )){
             if ( Math.sqrt( Math.pow( xPos - fishbowl.centerX,2) + Math.pow( yPos - fishbowl.centerY,2)) > ( fishbowl.radius - bug.size)){
@@ -548,7 +557,11 @@ $(document).ready(function(){
                 let beta = Math.asin((yPos - 400)/200);
                 let alpha = Math.atan(Droplet.xSpeed/Droplet.ySpeed);
                 let Velocity =  Math.sqrt( Math.pow(Droplet.xSpeed,2) + Math.pow(Droplet.ySpeed,2));
+<<<<<<< HEAD
                 if (Droplet.ySpeed <= 0){
+=======
+                if (Droplet.ySpeed < 0){
+>>>>>>> 4e1215dd992c669c55bc715aa7f800b02f262260
                     Droplet.xSpeed  = -0.95* Velocity * Math.sin(2*Math.PI -alpha - 2*beta);
                     Droplet.ySpeed  = 0.95*Velocity * Math.cos(2*Math.PI -alpha - 2*beta);
                 }
@@ -577,6 +590,7 @@ $(document).ready(function(){
                 let beta = Math.asin((yPos - 400)/200);
                 let alpha = Math.atan(Droplet.xSpeed/Droplet.ySpeed);
                 let Velocity = Math.sqrt( Math.pow(Droplet.xSpeed,2) + Math.pow(Droplet.ySpeed,2));
+<<<<<<< HEAD
                 if (Droplet.ySpeed <= 0){
                     let xSpeedAbs = Math.abs(0.95*Velocity * Math.sin(-alpha + 2*beta));
                     if (Droplet.xSpeed >= 0){
@@ -597,6 +611,14 @@ $(document).ready(function(){
                         Droplet.xSpeed = xSpeedAbs;
                     }
                     //Droplet.xSpeed = 0.95*Velocity * Math.sin(-alpha + 2*beta);
+=======
+                if (Droplet.ySpeed < 0){
+                    Droplet.xSpeed = -0.95*Velocity * Math.sin(-alpha + 2*beta);
+                    Droplet.ySpeed = -0.95* Velocity * Math.cos(-alpha + 2*beta);
+                }
+                else{
+                    Droplet.xSpeed = 0.95*Velocity * Math.sin(-alpha + 2*beta);
+>>>>>>> 4e1215dd992c669c55bc715aa7f800b02f262260
                     Droplet.ySpeed = 0.95* Velocity * Math.cos(-alpha + 2*beta);
                 }
 
