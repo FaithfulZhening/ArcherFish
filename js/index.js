@@ -16,7 +16,7 @@ $(document).ready(function(){
         animate();
     }
 
-    let gravity = 0/fps;
+    let gravity = 1/fps;
     //this var records fishbowl coordinates
     let fishbowl = {
         centerX: 350,
@@ -36,8 +36,8 @@ $(document).ready(function(){
 
     let fish = {
         img : new Image(),
-        xPos : 180,
-        yPos : 450,
+        xPos : 300,
+        yPos : 460,
         angle : 0,
         //the fish collider will be a circle with one of the point
         collider:{
@@ -60,9 +60,9 @@ $(document).ready(function(){
         size1 : 4,
         size1Speed : 200/fps,
         size2 : 5,
-        size2Speed : 150/fps,
+        size2Speed : 180/fps,
         size3 : 6,
-        size3Speed : 100/fps,
+        size3Speed : 160 /fps,
         size1Collider:{
             radius : 4
         },
@@ -86,6 +86,9 @@ $(document).ready(function(){
     let droplets = [];
     let dropletsCnt = 0;
     let waterLine;
+    let leap = 0;
+    //fire indicates if the player can shoot bubbles
+    let fire = true;
 
     let fishBowlInter = {};
     let fishBowlExter = {};
@@ -112,6 +115,7 @@ $(document).ready(function(){
         ctx.arc(350, 400, 200, 0.75*Math.PI, 1.2 * Math.PI);
         ctx.lineTo(180,280);
         ctx.stroke();
+
     }
 
 
@@ -182,6 +186,11 @@ $(document).ready(function(){
                 ctx.drawImage(fish.img, fish.xPos,fish.yPos, 100, 100 * fish.img.height / fish.img.width);
             }
 
+            leap ++;
+            if (leap > 40){
+                leap = 1;
+                fire = true;
+            }
             document.onkeydown = checkKey;
             displayBugMovement(ctx);
             displayDropletMovement(ctx);
@@ -225,7 +234,10 @@ $(document).ready(function(){
         }
         //space
         else if (e.keyCode == '32'){
-            shootDroplet();
+            if (fire == true){
+                shootDroplet();
+                fire = false;
+            }
         }
 
     }
@@ -301,6 +313,8 @@ $(document).ready(function(){
             yPos : 230,
             xSpeed : 0,
             ySpeed : 0,
+            radius : 15,
+            size : 15,
             collider : bugMeta.collider,
             alive : true
         };
@@ -315,7 +329,7 @@ $(document).ready(function(){
         //so the wind spped will be (70 ~ 350) / frame per second
         wind.speed = (Math.random() * 280 + 70)/fps;
         //test
-        wind.speed = 0/fps;
+        //wind.speed = 120/fps;
         //console.log(wind.speed);
         setTimeout(function(){
             generateWind();
@@ -331,20 +345,22 @@ $(document).ready(function(){
                 delete bugs[index];
                 continue;
             }
+            detectDropletWithFishBowl(bugs[index]);
             if (bugs[index].yPos < 282){
                 bugs[index].xSpeed = wind.speed;
             }
             bugs[index].xPos += bugs[index].xSpeed;
             if (bugs[index].alive != true){
-                //to make the impact of gravity more obvious, time the gravity coefficient by 40
-                bugs[index].yPos += gravity*40;
+                //to make the impact of gravity more obvious, time the gravity coefficient by 50
+                bugs[index].yPos += gravity * 50;
 
             }
             ctx.drawImage(bugMeta.img,bugs[index].xPos,bugs[index].yPos,30,30*bugMeta.img.height/bugMeta.img.width);
             //test purpose, draw bug collide
+            /*
             ctx.beginPath();
             ctx.arc(bugs[index].xPos + 18,bugs[index].yPos+18,9,0,Math.PI*2);
-            ctx.stroke();
+            ctx.stroke();*/
             //delete bug if is out of screen
             if (bugs[index].xPos > 700){
                 delete bugs[index];
@@ -372,7 +388,11 @@ $(document).ready(function(){
                 continue;
             }
             //console.log(droplets[i].xPos);
-            //test purpose
+            /*test purpose
+            if (detectDropletWithFishBowl(droplets[i])){
+                delete droplets[i];
+                continue;
+            }*/
             detectDropletWithFishBowl(droplets[i]);
             for (let j in bugs){
                 var result = detectDropletBugCollision(bugs[j],droplets[i]);
@@ -390,12 +410,18 @@ $(document).ready(function(){
             //calculate the position in next frame
             droplets[i].ySpeed -= gravity;
             droplets[i].yPos -= droplets[i].ySpeed;
-            //Droplet motion must also be affected by wind, once above the top of the bowl.
-            if (droplets[i].yPos < 282.44) {
-                droplets[i].windSpeed = wind.speed;
-
+            //if the wind speed changed, renew status
+            if (droplets[i].windSpeed != wind.speed){
+                droplets[i].impacted = false;
             }
-            droplets[i].xPos += droplets[i].windSpeed;
+            //Droplet motion must also be affected by wind, once above the top of the bowl.
+            if ( (droplets[i].yPos < 282.44) && (droplets[i].impacted == false)) {
+                droplets[i].xSpeed = droplets[i].xSpeed - droplets[i].windSpeed + wind.speed;
+                droplets[i].windSpeed = wind.speed;
+                droplets[i].impacted = true;
+            }
+
+           // droplets[i].xPos += droplets[i].windSpeed;
             droplets[i].xPos += droplets[i].xSpeed;
             //delete droplet if out of screen
             if ((droplets[i].xPos > 700) || (droplets[i].xPos < 0) || (droplets[i].yPos) < 0 || (droplets[i].yPos) > 700){
@@ -424,7 +450,6 @@ $(document).ready(function(){
              */
             //console.log("Collision with bug detected!");
             bug.alive = false;
-            console.log("bug is dead");
             return true;
         }
         return false;
@@ -456,46 +481,125 @@ $(document).ready(function(){
             this.collided = false;
             this.windSpeed = 0;
             this.xSpeed = speed*Math.sin(this.angle);
+            this.impacted = false;
             //reduce the angle's impact on vertical speed
-            this.ySpeed = speed*Math.cos(this.angle) + 2/fps;
+            this.ySpeed = speed*Math.cos(this.angle);
             if (this.angle >= 0){
                 this.xPos = xPos + 35 * Math.sin(this.angle);
             }else{
-                this.xPos = xPos + 60 * Math.sin(this.angle);
+                this.xPos = xPos + 35 * Math.sin(this.angle);
             }
 
             this.yPos = yPos - 30 * Math.cos(this.angle) + 35;
         }
     }
 
-    function detectDropletWithFishBowl(Droplet){
-        let xPos = Droplet.xPos;
-        let yPos = Droplet.yPos;
-        //left bound detection
-        if ( (xPos >= 150) && ( xPos < 189)){
-            let y1 = fishBowlInter[Math.round(xPos)][0];
-            let y2 = fishBowlInter[Math.round(xPos)][1];
-            if ( ((yPos > y1 - 10) && (yPos < y1 + 10)) || ((yPos > y2 -10) && (yPos < y2 +10 ) )){
-                console.log("Check");
-                //first, calculate the angle at the collision point
+    function detectBugWithFishBowl(bug){
+        let xPos = bug.xPos + 15;
+        let yPos = bug.yPos + 15;
+        //left bound detection and bounce
+        if ( (xPos >=  150) && ( xPos + bug.size<= 189) && (yPos >282.44 )){
+            if ( Math.sqrt( Math.pow( xPos - fishbowl.centerX,2) + Math.pow( yPos - fishbowl.centerY,2)) > ( fishbowl.radius - bug.size)){
                 let beta = Math.asin((yPos - 400)/200);
-                let alpha = Math.atan(Droplet.xSpeed/Droplet.ySpeed);
-                let Velocity = Math.sqrt( Math.pow(Droplet.xSpeed,2) + Math.pow(Droplet.ySpeed,2));
-                Droplet.xSpeed = -Velocity * Math.sin(-alpha + beta);
-                Droplet.ySpeed = Velocity * Math.cos(-alpha + beta);
+                let alpha = Math.atan(bug.xSpeed/bug.ySpeed);
+                let Velocity =  Math.sqrt( Math.pow(bug.xSpeed,2) + Math.pow(bug.ySpeed,2));
+                if (bug.ySpeed < 0){
+                    bug.xSpeed  = -0.2* Velocity * Math.sin(2*Math.PI -alpha - 2*beta);
+                    bug.ySpeed  = 0.2*Velocity * Math.cos(2*Math.PI -alpha - 2*beta);
+                }
+                else{
+                    bug.xSpeed  = 0.2* Velocity * Math.sin(2*Math.PI -alpha - 2*beta);
+                    bug.ySpeed  = 0.2*Velocity * Math.cos(2*Math.PI -alpha - 2*beta);
+                }
 
                 return true;
             }
         }
-        else if ( (xPos >= 511) && ( xPos < 550)){
-            let y1 = fishBowlInter[Math.round(xPos)][0];
-            let y2 = fishBowlInter[Math.round(xPos)][1];
-            if ( ((yPos > y1 - 20) && (yPos < y1 + 20)) || ((yPos > y2 -20) && (yPos < y2 +200 ) )){
+        //right bound detection and bounce
+        else if ( (xPos > 512) && ( xPos < 550) && (yPos >282.44 )){
+            if ( Math.sqrt( Math.pow( xPos - fishbowl.centerX,2) + Math.pow( yPos - fishbowl.centerY,2)) > ( fishbowl.radius - bug.size)){
+                let beta = Math.asin((yPos - 400)/200);
+                let alpha = Math.atan(bug.xSpeed/bug.ySpeed);
+                let Velocity = Math.sqrt( Math.pow(bug.xSpeed,2) + Math.pow(bug.ySpeed,2));
+                if (bug.ySpeed < 0){
+                    bug.xSpeed = -0.2*Velocity * Math.sin(-alpha + 2*beta);
+                    bug.ySpeed = -0.2* Velocity * Math.cos(-alpha + 2*beta);
+                }
+                else{
+                    bug.xSpeed = 0.2*Velocity * Math.sin(-alpha + 2*beta);
+                    bug.ySpeed = 0.2* Velocity * Math.cos(-alpha + 2*beta);
+                }
+
+                return true;
+            }
+        }
+        else return false;
+    }
+    function detectDropletWithFishBowl(Droplet){
+        let xPos = Droplet.xPos;
+        let yPos = Droplet.yPos;
+        //left bound detection and bounce
+        if ( (xPos >=  150) && ( xPos + Droplet.size<= 189) && (yPos >282.44 )){
+
+            //et y1 = fishBowlInter[Math.round(xPos)][0];
+            //let y2 = fishBowlInter[Math.round(xPos)][1];
+            //if ( ((yPos > y1 - 10) && (yPos < y1 + 10)) || ((yPos > y2 -10) && (yPos < y2 +10 ) ))
+            if ( Math.sqrt( Math.pow( xPos - fishbowl.centerX,2) + Math.pow( yPos - fishbowl.centerY,2)) > ( fishbowl.radius - Droplet.size)){
+                let beta = Math.asin((yPos - 400)/200);
+                let alpha = Math.atan(Droplet.xSpeed/Droplet.ySpeed);
+                let Velocity =  Math.sqrt( Math.pow(Droplet.xSpeed,2) + Math.pow(Droplet.ySpeed,2));
+                if (Droplet.ySpeed <= 0){
+                    Droplet.xSpeed  = -0.95* Velocity * Math.sin(2*Math.PI -alpha - 2*beta);
+                    Droplet.ySpeed  = 0.95*Velocity * Math.cos(2*Math.PI -alpha - 2*beta);
+                }
+                else{
+                    Droplet.xSpeed  = 0.95* Velocity * Math.sin(2*Math.PI -alpha - 2*beta);
+                    Droplet.ySpeed  = 0.95*Velocity * Math.cos(2*Math.PI -alpha - 2*beta);
+                }
+
+                /*
+                if (yPos >= 400){
+                    Droplet.xSpeed = Velocity * Math.sin(2*Math.PI -alpha - 2*beta);
+                    Droplet.ySpeed = Velocity * Math.cos(-alpha + 2*beta);
+                }
+                else if (yPos < 400){
+                    Droplet.xSpeed = -Velocity * Math.sin(-alpha + 2*beta);
+                    Droplet.ySpeed = Velocity * Math.cos(-alpha + 2*beta);
+                }*/
+
+                return true;
+            }
+        }
+        //right bound detection and bounce
+
+        else if ( (xPos > 512) && ( xPos < 550) && (yPos >282.44 )){
+            if ( Math.sqrt( Math.pow( xPos - fishbowl.centerX,2) + Math.pow( yPos - fishbowl.centerY,2)) > ( fishbowl.radius - Droplet.size)){
                 let beta = Math.asin((yPos - 400)/200);
                 let alpha = Math.atan(Droplet.xSpeed/Droplet.ySpeed);
                 let Velocity = Math.sqrt( Math.pow(Droplet.xSpeed,2) + Math.pow(Droplet.ySpeed,2));
-                Droplet.xSpeed = Velocity * Math.sin(-alpha + 2*beta);
-                Droplet.ySpeed = Velocity * Math.cos(-alpha + 2*beta);
+                if (Droplet.ySpeed <= 0){
+                    let xSpeedAbs = Math.abs(0.95*Velocity * Math.sin(-alpha + 2*beta));
+                    if (Droplet.xSpeed >= 0){
+                        Droplet.xSpeed = -xSpeedAbs;
+                    }
+                    else {
+                        Droplet.xSpeed = xSpeedAbs;
+                    }
+                   // Droplet.xSpeed = -0.95*Velocity * Math.sin(-alpha + 2*beta);
+                    Droplet.ySpeed = -0.95* Velocity * Math.cos(-alpha + 2*beta);
+                }
+                else{
+                    let xSpeedAbs = Math.abs(0.95*Velocity * Math.sin(-alpha + 2*beta));
+                    if (Droplet.xSpeed >= 0){
+                        Droplet.xSpeed = -xSpeedAbs;
+                    }
+                    else {
+                        Droplet.xSpeed = xSpeedAbs;
+                    }
+                    //Droplet.xSpeed = 0.95*Velocity * Math.sin(-alpha + 2*beta);
+                    Droplet.ySpeed = 0.95* Velocity * Math.cos(-alpha + 2*beta);
+                }
+
                 return true;
             }
         }
