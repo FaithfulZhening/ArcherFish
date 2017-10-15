@@ -16,7 +16,7 @@ $(document).ready(function(){
         animate();
     }
 
-    let gravity = 1.5/fps;
+    let gravity = 0/fps;
     //this var records fishbowl coordinates
     let fishbowl = {
         centerX: 350,
@@ -58,11 +58,11 @@ $(document).ready(function(){
 
     let dropletMeta = {
         size1 : 4,
-        size1Speed : 100/fps,
+        size1Speed : 200/fps,
         size2 : 5,
-        size2Speed : 90/fps,
+        size2Speed : 150/fps,
         size3 : 6,
-        size3Speed : 85/fps,
+        size3Speed : 100/fps,
         size1Collider:{
             radius : 4
         },
@@ -87,6 +87,8 @@ $(document).ready(function(){
     let dropletsCnt = 0;
     let waterLine;
 
+    let fishBowlInter = {};
+    let fishBowlExter = {};
     function init(){
         var canvas = document.getElementById('canvas');
         canvas.height = 700;
@@ -94,7 +96,7 @@ $(document).ready(function(){
         fish.img.src = './css/fish.png';
         bugMeta.img.src = './css/bug.png';
         waterLine = calWaterLine(500,950,35,0.6);
-
+        calculateFishBowlBound();
         generateBugs();
         generateWind();
 
@@ -104,14 +106,44 @@ $(document).ready(function(){
     //draw fishbowl in canvas
     function drawFishBowl(ctx){
         ctx.beginPath();
-        ctx.lineWidth="9";
-        ctx.moveTo(530,280);
+        ctx.lineWidth=10;
+        ctx.moveTo(520,280);
         ctx.arc(350, 400, 200, 1.8*Math.PI, 0.25 * Math.PI);
         ctx.arc(350, 400, 200, 0.75*Math.PI, 1.2 * Math.PI);
-        ctx.lineTo(170,280);
+        ctx.lineTo(180,280);
         ctx.stroke();
     }
 
+
+    //calculate the bound of fish bowl
+    function calculateFishBowlBound(){
+        let y =0;
+        //calculate the coordinates of fhishbowl inner bound using the circle equation
+        // store them in object called fishBowlInter
+        for (let x = 150; x < 209; x ++){
+            //if (x < 189){
+                y = [Math.sqrt( 40000 - Math.pow(x-350,2)) + 400, -Math.sqrt(40000 - Math.pow(x-350,2)) + 400];
+           // }
+            //else{
+               // y = Math.sqrt( 40000 - Math.pow(x-350,2)) + 400;
+            //}
+
+            fishBowlInter[x] = y;
+        }
+
+        for (let x = 490; x < 551; x ++){
+            //if (x > 511){
+                y = [Math.sqrt( 40000 - Math.pow(x-350,2)) + 400, -Math.sqrt(40000 - Math.pow(x-350,2)) + 400];
+            //}
+            //else{
+            //    y = Math.sqrt( 40000 - Math.pow(x-350,2)) + 400;
+            //}
+
+
+            fishBowlInter[x] = y;
+            //console.log(x + " " + fishBowlInter[x]);
+        }
+    }
     function animate() {
 
         // request another frame
@@ -136,6 +168,7 @@ $(document).ready(function(){
             //draw waterline
             drawWaterLine();
             //if angle > 0, rotate fish
+            fish.yPos = waterLine[Math.round(fish.xPos) - 160] *0.95;
             if (fish.angle != 0){
                 //let cache = fish.img;
                 // save the unrotated context of the canvas so we can restore it later
@@ -180,14 +213,14 @@ $(document).ready(function(){
             //check if the fish can continue to move
             let check = detectFishMoveLeft();
             if (check) {
-                fish.xPos -= 2;
+                fish.xPos -= 5;
             }
         }
         //d
         else if (e.keyCode == '68') {
             let check = detectFishMoveRight();
             if (check) {
-                fish.xPos += 2;
+                fish.xPos += 5;
             }
         }
         //space
@@ -266,6 +299,8 @@ $(document).ready(function(){
         bugs[bugCnt] = {
             xPos : 0,
             yPos : 230,
+            xSpeed : 0,
+            ySpeed : 0,
             collider : bugMeta.collider,
             alive : true
         };
@@ -280,7 +315,7 @@ $(document).ready(function(){
         //so the wind spped will be (70 ~ 350) / frame per second
         wind.speed = (Math.random() * 280 + 70)/fps;
         //test
-        wind.speed = 120/fps;
+        wind.speed = 0/fps;
         //console.log(wind.speed);
         setTimeout(function(){
             generateWind();
@@ -292,7 +327,19 @@ $(document).ready(function(){
     //calculate and display bug movement
     function displayBugMovement(ctx){
         for (var index in bugs){
-            bugs[index].xPos += wind.speed;
+            if (detectBugWithWater(bugs[index])){
+                delete bugs[index];
+                continue;
+            }
+            if (bugs[index].yPos < 282){
+                bugs[index].xSpeed = wind.speed;
+            }
+            bugs[index].xPos += bugs[index].xSpeed;
+            if (bugs[index].alive != true){
+                //to make the impact of gravity more obvious, time the gravity coefficient by 40
+                bugs[index].yPos += gravity*40;
+
+            }
             ctx.drawImage(bugMeta.img,bugs[index].xPos,bugs[index].yPos,30,30*bugMeta.img.height/bugMeta.img.width);
             //test purpose, draw bug collide
             ctx.beginPath();
@@ -320,9 +367,15 @@ $(document).ready(function(){
     //calculate and display all droplets
     function displayDropletMovement(ctx){
         for (let i in droplets){
+            if (detectDropletWithWater(droplets[i])){
+                delete droplets[i];
+                continue;
+            }
+            //console.log(droplets[i].xPos);
+            //test purpose
+            detectDropletWithFishBowl(droplets[i]);
             for (let j in bugs){
                 var result = detectDropletBugCollision(bugs[j],droplets[i]);
-                //console.log(droplets[i].size);
             }
             //if the droplet collide with a bug, delete it
             if (result === true){
@@ -362,7 +415,7 @@ $(document).ready(function(){
         let x = droplet.xPos - (bug.xPos + bugMeta.collider.xOffset);
         let y = droplet.yPos - (bug.yPos + bugMeta.collider.yOffset);
         let distance = Math.sqrt( x*x + y*y);
-        if (distance <= bugMeta.collider.radius + droplet.size){
+        if ((distance <= bugMeta.collider.radius + droplet.size) && (bug.alive == true)){
             //interesting, this part does not work as expected
             /*
             droplet.collided = true;
@@ -370,9 +423,29 @@ $(document).ready(function(){
             console.log(droplet.collided);
              */
             //console.log("Collision with bug detected!");
+            bug.alive = false;
+            console.log("bug is dead");
             return true;
         }
         return false;
+    }
+
+    function detectBugWithWater(bug){
+        if ( (bug.xPos > 160)  && (bug.xPos < 540)
+            && (bug.yPos > waterLine[Math.round(bug.xPos - 160)] - 15) ) {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    function detectDropletWithWater(droplet){
+        if ( (droplet.xPos > 160)  && (droplet.xPos < 540)
+            && (droplet.yPos > waterLine[Math.round(droplet.xPos - 160)]) ) {
+            return true;
+        }
+        else
+            return false;
     }
 
     class Droplet{
@@ -384,7 +457,7 @@ $(document).ready(function(){
             this.windSpeed = 0;
             this.xSpeed = speed*Math.sin(this.angle);
             //reduce the angle's impact on vertical speed
-            this.ySpeed = speed*Math.cos(this.angle) + 200/fps;
+            this.ySpeed = speed*Math.cos(this.angle) + 2/fps;
             if (this.angle >= 0){
                 this.xPos = xPos + 35 * Math.sin(this.angle);
             }else{
@@ -395,7 +468,39 @@ $(document).ready(function(){
         }
     }
 
+    function detectDropletWithFishBowl(Droplet){
+        let xPos = Droplet.xPos;
+        let yPos = Droplet.yPos;
+        //left bound detection
+        if ( (xPos >= 150) && ( xPos < 189)){
+            let y1 = fishBowlInter[Math.round(xPos)][0];
+            let y2 = fishBowlInter[Math.round(xPos)][1];
+            if ( ((yPos > y1 - 10) && (yPos < y1 + 10)) || ((yPos > y2 -10) && (yPos < y2 +10 ) )){
+                console.log("Check");
+                //first, calculate the angle at the collision point
+                let beta = Math.asin((yPos - 400)/200);
+                let alpha = Math.atan(Droplet.xSpeed/Droplet.ySpeed);
+                let Velocity = Math.sqrt( Math.pow(Droplet.xSpeed,2) + Math.pow(Droplet.ySpeed,2));
+                Droplet.xSpeed = -Velocity * Math.sin(-alpha + beta);
+                Droplet.ySpeed = Velocity * Math.cos(-alpha + beta);
 
+                return true;
+            }
+        }
+        else if ( (xPos >= 511) && ( xPos < 550)){
+            let y1 = fishBowlInter[Math.round(xPos)][0];
+            let y2 = fishBowlInter[Math.round(xPos)][1];
+            if ( ((yPos > y1 - 20) && (yPos < y1 + 20)) || ((yPos > y2 -20) && (yPos < y2 +200 ) )){
+                let beta = Math.asin((yPos - 400)/200);
+                let alpha = Math.atan(Droplet.xSpeed/Droplet.ySpeed);
+                let Velocity = Math.sqrt( Math.pow(Droplet.xSpeed,2) + Math.pow(Droplet.ySpeed,2));
+                Droplet.xSpeed = Velocity * Math.sin(-alpha + 2*beta);
+                Droplet.ySpeed = Velocity * Math.cos(-alpha + 2*beta);
+                return true;
+            }
+        }
+        else return false;
+    }
     //test function
 
     init();
